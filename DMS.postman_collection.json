@@ -1,0 +1,324 @@
+{
+	"info": {
+		"_postman_id": "155da662-85e4-4efe-9d15-e2261b6355e8",
+		"name": "DMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Document",
+			"item": [
+				{
+					"name": "Get Document",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document/b15961f3-c7eb-4381-936e-f0026412604d",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"document",
+								"b15961f3-c7eb-4381-936e-f0026412604d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Document",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"folderId\": \"00000c8f4313e-87e3-4111-889a-2b457e067c46\",\n    \"fileName\": \"REST FIle For dlete.txt\",\n    \"content\": \"This is the rest file content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"document"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Document",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document/e24c7adc-47e8-488f-8224-17be1b89ea47",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"document",
+								"e24c7adc-47e8-488f-8224-17be1b89ea47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Document",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"folderId\": \"7c1dc096-70d3-495e-b30d-13cec0377026\",\n    \"fileName\": \"Updated File asd Name.txt\",\n    \"content\": \"updated content final\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/7c1dc096-70d3-495e-b30d-13cec0377026/document/fa45fb94-37c4-4d4a-bf0e-496b0c15d100",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"7c1dc096-70d3-495e-b30d-13cec0377026",
+								"document",
+								"fa45fb94-37c4-4d4a-bf0e-496b0c15d100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move Document",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document/b15961f3-c7eb-4381-936e-f0026412604d",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"document",
+								"b15961f3-c7eb-4381-936e-f0026412604d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Folder",
+			"item": [
+				{
+					"name": "Get Folder Contents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/7c1dc096-70d3-495e-b30d-13cec0377026",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"7c1dc096-70d3-495e-b30d-13cec0377026"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Folder",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"0483d877-00c1-4577-bf5e-5ab36f25824f\",\n    \"folderName\": \"REST Folder 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/folder",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"0483d877-00c1-4577-bf5e-5ab36f25824f\",\n    \"folderId\": \"798b72bb-a501-4736-8479-46612c3e4e50\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/798b72bb-a501-4736-8479-46612c3e4e50",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"798b72bb-a501-4736-8479-46612c3e4e50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Folder",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"folderId\": \"798b72bb-a501-4736-8479-46612c3e4e50\",\n    \"folderName\": \"Updated Folder Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/folder/798b72bb-a501-4736-8479-46612c3e4e50",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"folder",
+								"798b72bb-a501-4736-8479-46612c3e4e50"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dashboard",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"0483d877-00c1-4577-bf5e-5ab36f25824f\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/dashboard",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dashboard"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "192.168.0.127:50052",
+			"type": "default"
+		}
+	]
+}
