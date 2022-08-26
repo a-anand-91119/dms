@@ -159,11 +159,11 @@ server.bindAsync(
 )
 
 
-const prepareDummyData = () => {
+const prepareDummyData = async () => {
     if (process.env.BACKEND_SERVER_INIT_DATA == "true") {
-        MongoManager.dropCollection(COLLECTIONS.DOCUMENTS)
-        MongoManager.dropCollection(COLLECTIONS.FOLDER)
-        MongoManager.dropCollection(COLLECTIONS.USER)
+        await MongoManager.dropCollection(COLLECTIONS.DOCUMENTS)
+        await MongoManager.dropCollection(COLLECTIONS.FOLDER)
+        await MongoManager.dropCollection(COLLECTIONS.USER)
 
         const userId1 = uuid()
         const userId2 = uuid()

@@ -46,8 +46,8 @@ class MongoManager {
         db.collection(collectionName).deleteOne(query)
     }
 
-    static dropCollection(collectionName){
-        db.collection(collectionName).drop()
+    static async dropCollection(collectionName){
+        await db.collection(collectionName).drop()
     }
 }
 
