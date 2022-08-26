@@ -27,6 +27,24 @@ class MongoManager {
         })
     }
 
+    static deleteMultipleFromCollection({collectionName, query, successCallback, errorCallback}){
+        db.collection(collectionName).deleteMany(query, (err, res) => {
+            if(err) errorCallback(err);
+            successCallback();
+        });
+    }
+
+    static updateDocument({collectionName, query, updateQuery, returnOptions, successCallback, errorCallback}){
+        db.collection(collectionName).findOneAndUpdate(query, updateQuery, returnOptions, (err, res) => {
+            if(err) errorCallback(err);
+            successCallback(res);
+        });
+    }
+
+    static deleteFromColletion({collectionName, query}){
+        db.collection(collectionName).deleteOne(query)
+    }
+
     static dropCollection(collectionName){
         db.collection(collectionName).drop()
     }

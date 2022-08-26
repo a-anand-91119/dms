@@ -57,6 +57,25 @@ server.addService(documentProto.document.DocumentService.service, {
         } else {
             callback(new Error("Document with same name exists in this folder"), undefined)
         }
+    },
+    DeleteDocument: (call, callback) => {
+        MongoManager.deleteFromColletion({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            query: {documentId: call.request.documentId, folderId: call.request.folderId}
+        })
+        callback(undefined, {})
+    },
+    UpdateDocument: (call, callback) => {
+        MongoManager.updateDocument({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            query: {documentId: call.request.documentId},
+            updateQuery: { 
+                "$set": {fileName: call.request.fileName, content: call.request.content, folderId: call.request.folderId}
+            },
+            returnOptions: {returnDocument: "after"},
+            errorCallback: err => callback(err, undefined),
+            successCallback: data => callback(undefined, data.value)
+        })
     }
 })
 
@@ -96,8 +115,31 @@ server.addService(folderProto.folder.FolderService.service, {
         } else {
             callback(new Error("Folder with name already exists"), undefined)
         }
+    },
+    DeleteFolder: (call, callback) => {
+        MongoManager.deleteMultipleFromCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            query: {folderId: call.request.folderId},
+            errorCallback: err => callback(err, undefined),
+            successCallback: () => {
+                MongoManager.deleteFromColletion({
+                    collectionName: COLLECTIONS.FOLDER,
+                    query: {folderId: call.request.folderId}
+                })
+                callback(undefined, {})
+            }
+        })
+    },
+    UpdateFolder: (call, callback) =>{
+        MongoManager.updateDocument({
+            collectionName: COLLECTIONS.FOLDER,
+            query: {folderId: call.request.folderId},
+            updateQuery: { "$set": {folderName: call.request.folderName}},
+            returnOptions: {returnDocument: "after"},
+            errorCallback: err => callback(err, undefined),
+            successCallback: data => callback(undefined, data.value)
+        })
     }
-    // TODO: implement delete and update folder methods
 })
 
 server.bindAsync(

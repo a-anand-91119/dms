@@ -4,9 +4,11 @@ package document;
 service DocumentService {
     rpc GetDocument (DocumentRequest) returns (Document) {}
     rpc CreateDocument (Document) returns (Document) {}
-    rpc DeleteDocument (DocumentRequest) returns (Document) {}
+    rpc DeleteDocument (DocumentRequest) returns (Empty) {}
     rpc UpdateDocument (Document) returns (Document) {}
 }
+
+message Empty {}
 
 message DocumentRequest{
     required string documentId = 1;

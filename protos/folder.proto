@@ -7,9 +7,11 @@ service FolderService {
     rpc GetAllFolders (FolderRequest) returns (FolderLists) {}
     rpc GetFolderContents (FolderRequest) returns (document.Documents) {}
     rpc CreateFolder (CreateFolderRequest) returns (Folder) {}
-    rpc DeleteFolder (FolderRequest) returns (Folder) {}
+    rpc DeleteFolder (FolderRequest) returns (Empty) {}
     rpc UpdateFolder (Folder) returns (Folder) {}
 }
+
+message Empty {}
 
 message FolderRequest {
     string userId = 1;

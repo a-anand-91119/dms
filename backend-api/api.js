@@ -39,10 +39,8 @@ const folderApi = new FolderService("0.0.0.0:50051", grpc.credentials.createInse
 const documentApi = new DocumentService("0.0.0.0:50051", grpc.credentials.createInsecure())
 
 
-
 app.get("/folder/:folderId/document/:documentId", (req, res) => {
     documentApi.GetDocument({ documentId: req.params.documentId, folderId: req.params.folderId }, (error, document) => {
-        console.log(" * Getting contents of document")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -51,6 +49,30 @@ app.get("/folder/:folderId/document/:documentId", (req, res) => {
     })
 })
 
+app.delete("/folder/:folderId/document/:documentId", (req, res) => {
+    documentApi.DeleteDocument({ documentId: req.params.documentId, folderId: req.params.folderId }, (error, document) => {
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(document)
+    })
+})
+
+app.put("/folder/:folderId/document/:documentId", (req, res) => {
+    documentApi.UpdateDocument({
+        documentId: req.params.documentId,
+        folderId: req.body.folderId,
+        fileName: req.body.fileName,
+        content: req.body.content
+    }, (error, document) => {
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(document)
+    })
+})
 
 app.post("/folder/:folderId/document", (req, res) => {
     documentApi.CreateDocument({
@@ -73,6 +95,26 @@ app.get("/folder/:folderId", (req, res) => {
             res.send({ error: error.details })
         }
         res.send(data.documents);
+    })
+})
+
+app.delete("/folder/:folderId", (req, res) => {
+    folderApi.DeleteFolder({ folderId: req.body.folderId, userId: req.body.userId }, (error, data) => {
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(data);
+    })
+})
+
+app.put("/folder/:folderId", (req, res) => {
+    folderApi.UpdateFolder({ folderId: req.body.folderId, folderName: req.body.folderName }, (error, data) => {
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(data);
     })
 })
 
