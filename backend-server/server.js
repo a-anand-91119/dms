@@ -146,7 +146,7 @@ server.bindAsync(
     "0.0.0.0:50051",
     grpc.ServerCredentials.createInsecure(),
     (error, port) => {
-        console.log(`Server running at http://0.0.0.0:${port}`)
+        console.log(` * Server running at http://0.0.0.0:${port}`)
         server.start()
     }
 )

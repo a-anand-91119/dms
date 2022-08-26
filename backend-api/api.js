@@ -3,6 +3,7 @@ const protoLoader = require("@grpc/proto-loader")
 
 const PROTO_PATH = "../protos"
 const BACKEND_SERVER = `${process.env.BACKEND_SERVER_GRPC_HOST}:${process.env.BACKEND_SERVER_GRPC_PORT}`
+// const BACKEND_SERVER = `0.0.0.0:50051`
 console.log(" * Backend Server: " + BACKEND_SERVER)
 
 const express = require('express');
@@ -149,5 +150,5 @@ app.post("/dashboard", (req, res) => {
 })
 
 app.listen(50052, () => {
-    console.log('listening on port 50052');
+    console.log(' * listening on port 50052');
 })
