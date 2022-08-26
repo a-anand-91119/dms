@@ -1,0 +1,14 @@
+syntax = "proto3";
+import "item.proto";
+package folder;
+
+service FolderService {
+    rpc GetAllFolders (item.ItemRequest) returns (item.ItemResponse) {}
+    rpc GetFolderContents (item.ItemRequest) returns (item.ItemResponse) {}
+    rpc CreateFolder (CreateFolderRequest) returns (item.Item) {}
+}
+
+message CreateFolderRequest {
+    required string userId = 1;
+    required string folderName = 2;
+}
