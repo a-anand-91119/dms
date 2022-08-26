@@ -1,15 +1,10 @@
 syntax = "proto3";
 package item;
 
-enum ItemType{
-    FOLDER = 1;
-    FILE = 2;
-}
-
 message Item {
     string id =1 ;
     required string name = 2;
-    required ItemType type =3;
+    required string type =3;
     string content = 4;
     string folder = 5;
 }

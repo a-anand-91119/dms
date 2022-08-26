@@ -6,9 +6,17 @@ service FolderService {
     rpc GetAllFolders (item.ItemRequest) returns (item.ItemResponse) {}
     rpc GetFolderContents (item.ItemRequest) returns (item.ItemResponse) {}
     rpc CreateFolder (CreateFolderRequest) returns (item.Item) {}
+    rpc DeleteFolder (item.ItemRequest) returns (item.Item) {}
+    rpc UpdateFolder (EditFolderRequest) returns (item.Item) {}
 }
 
 message CreateFolderRequest {
     required string userId = 1;
     required string folderName = 2;
+}
+
+message EditFolderRequest {
+    required string userId = 1;
+    required string folderId = 2;
+    required string folderName = 3;
 }

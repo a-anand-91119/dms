@@ -1,0 +1,10 @@
+syntax = "proto3";
+package document;
+import "item.proto";
+
+service DocumentService {
+    rpc GetDocument (item.ItemRequest) returns (item.Item) {}
+    rpc CreateDocument (item.Item) returns (item.Item) {}
+    rpc DeleteDocument (item.ItemRequest) returns (item.Item) {}
+    rpc UpdateDocument (item.Item) returns (item.Item) {}
+}
