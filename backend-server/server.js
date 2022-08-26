@@ -29,6 +29,7 @@ const server = new grpc.Server()
 
 server.addService(documentProto.document.DocumentService.service, {
     GetDocument: async (call, callback) => {
+        console.log(" * GetDocument")
         document = await MongoManager.filterFromCollection({
             collectionName: COLLECTIONS.DOCUMENTS,
             query: { documentId: call.request.documentId } // TODO: should folderId needs to be considered here???
@@ -37,6 +38,7 @@ server.addService(documentProto.document.DocumentService.service, {
         callback(null, document[0])
     },
     CreateDocument: async (call, callback) => {
+        console.log(" * CreateDocument")
         // check whether a document with same name exists in the folder
         // if not then create the document
         document = await MongoManager.filterFromCollection({
@@ -59,6 +61,7 @@ server.addService(documentProto.document.DocumentService.service, {
         }
     },
     DeleteDocument: (call, callback) => {
+        console.log(" * DeleteDocument")
         MongoManager.deleteFromColletion({
             collectionName: COLLECTIONS.DOCUMENTS,
             query: {documentId: call.request.documentId, folderId: call.request.folderId}
@@ -66,6 +69,7 @@ server.addService(documentProto.document.DocumentService.service, {
         callback(undefined, {})
     },
     UpdateDocument: (call, callback) => {
+        console.log(" * UpdateDocument")
         MongoManager.updateDocument({
             collectionName: COLLECTIONS.DOCUMENTS,
             query: {documentId: call.request.documentId},
@@ -81,6 +85,7 @@ server.addService(documentProto.document.DocumentService.service, {
 
 server.addService(folderProto.folder.FolderService.service, {
     GetAllFolders: async (call, callback) => {
+        console.log(" * GetAllFolders")
         mongoFolders = await MongoManager.filterFromCollection({
             collectionName: COLLECTIONS.FOLDER,
             query: { userId: call.request.userId },
@@ -89,8 +94,8 @@ server.addService(folderProto.folder.FolderService.service, {
         callback(null, { folders: mongoFolders })
     },
     GetFolderContents: async (call, callback) => {
+        console.log(" * GetFolderContents")
         // TODO: validate whether user has access to this folder
-        console.log(`GetFolderContents::folderId ${call.request.folderId}`)
         mongoDocuments = await MongoManager.filterFromCollection({
             collectionName: COLLECTIONS.DOCUMENTS,
             query: { folderId: call.request.folderId }
@@ -99,7 +104,7 @@ server.addService(folderProto.folder.FolderService.service, {
         callback(null, { documents: mongoDocuments })
     },
     CreateFolder: async (call, callback) => {
-        console.log(`CreateFolder::folderName ${call.request.folderName}`)
+        console.log(" * CreateFolder")
         existngFolders = await MongoManager.filterFromCollection({
             collectionName: COLLECTIONS.FOLDER,
             query: { folderName: call.request.folderName }
@@ -117,6 +122,7 @@ server.addService(folderProto.folder.FolderService.service, {
         }
     },
     DeleteFolder: (call, callback) => {
+        console.log(" * DeleteFolder")
         MongoManager.deleteMultipleFromCollection({
             collectionName: COLLECTIONS.DOCUMENTS,
             query: {folderId: call.request.folderId},
@@ -131,6 +137,7 @@ server.addService(folderProto.folder.FolderService.service, {
         })
     },
     UpdateFolder: (call, callback) =>{
+        console.log(" * UpdateFolder")
         MongoManager.updateDocument({
             collectionName: COLLECTIONS.FOLDER,
             query: {folderId: call.request.folderId},
@@ -154,7 +161,6 @@ server.bindAsync(
 
 const prepareDummyData = () => {
     if (process.env.BACKEND_SERVER_INIT_DATA == "true") {
-        // storing plain text password xD
         MongoManager.dropCollection(COLLECTIONS.DOCUMENTS)
         MongoManager.dropCollection(COLLECTIONS.FOLDER)
         MongoManager.dropCollection(COLLECTIONS.USER)

@@ -42,7 +42,9 @@ const documentApi = new DocumentService(BACKEND_SERVER, grpc.credentials.createI
 
 
 app.get("/folder/:folderId/document/:documentId", (req, res) => {
+    console.log(" * GetDocument")
     documentApi.GetDocument({ documentId: req.params.documentId, folderId: req.params.folderId }, (error, document) => {
+        console.log(" * Received response for GetDocument")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -52,7 +54,9 @@ app.get("/folder/:folderId/document/:documentId", (req, res) => {
 })
 
 app.delete("/folder/:folderId/document/:documentId", (req, res) => {
+    console.log(" * DeleteDocument")
     documentApi.DeleteDocument({ documentId: req.params.documentId, folderId: req.params.folderId }, (error, document) => {
+        console.log(" * Received response for DeleteDocument")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -62,12 +66,14 @@ app.delete("/folder/:folderId/document/:documentId", (req, res) => {
 })
 
 app.put("/folder/:folderId/document/:documentId", (req, res) => {
+    console.log(" * UpdateDocument")
     documentApi.UpdateDocument({
         documentId: req.params.documentId,
         folderId: req.body.folderId,
         fileName: req.body.fileName,
         content: req.body.content
     }, (error, document) => {
+        console.log(" * Received response for UpdateDocument")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -77,11 +83,13 @@ app.put("/folder/:folderId/document/:documentId", (req, res) => {
 })
 
 app.post("/folder/:folderId/document", (req, res) => {
+    console.log(" * CreateDocument")
     documentApi.CreateDocument({
         folderId: req.body.folderId,
         fileName: req.body.fileName,
         content: req.body.content
     }, (error, document) => {
+        console.log(" * Received response for CreateDocument")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -91,7 +99,9 @@ app.post("/folder/:folderId/document", (req, res) => {
 })
 
 app.get("/folder/:folderId", (req, res) => {
+    console.log(" * GetFolderContents")
     folderApi.GetFolderContents({ folderId: req.params.folderId }, (error, data) => {
+        console.log(" * Received response for GetFolderContents")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -101,7 +111,9 @@ app.get("/folder/:folderId", (req, res) => {
 })
 
 app.delete("/folder/:folderId", (req, res) => {
+    console.log(" * DeleteFolder")
     folderApi.DeleteFolder({ folderId: req.body.folderId, userId: req.body.userId }, (error, data) => {
+        console.log(" * Received response for DeleteFolder")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -111,7 +123,9 @@ app.delete("/folder/:folderId", (req, res) => {
 })
 
 app.put("/folder/:folderId", (req, res) => {
+    console.log(" * UpdateFolder")
     folderApi.UpdateFolder({ folderId: req.body.folderId, folderName: req.body.folderName }, (error, data) => {
+        console.log(" * Received response for UpdateFolder")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -121,8 +135,9 @@ app.put("/folder/:folderId", (req, res) => {
 })
 
 app.post("/folder", (req, res) => {
+    console.log(" * CreateFolder")
     folderApi.CreateFolder({ userId: req.body.userId, folderName: req.body.folderName }, (error, items) => {
-        console.log(" * Creating new folder")
+        console.log(" * Received response for CreateFolder")
         if (error) {
             console.error(error.details)
             res.send({ error: error.details })
@@ -133,8 +148,9 @@ app.post("/folder", (req, res) => {
 })
 
 app.post("/dashboard", (req, res) => {
+    console.log(" * GetAllFolders")
     folderApi.GetAllFolders({ userId: req.body.userId }, (error, items) => {
-        console.log(" * Getting all folders for user")
+        console.log(" * Received response for GetAllFolders")
         if (error) {
             console.error(error)
         }
