@@ -4,6 +4,23 @@ const protoLoader = require("@grpc/proto-loader")
 const PROTO_PATH = "../protos"
 const { uuid } = require("uuidv4")
 
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+
+const app = express();
+app.use(helmet());
+app.use(bodyParser.json());
+app.use(cors());
+app.use(morgan('combined'));
+
+
+app.get('/', (req, res) => {
+    res.send({ status: "OK" });
+});
+
 const grpcOptions = {
     keepCase: true,
     longs: String,
@@ -18,59 +35,76 @@ const FolderService = grpc.loadPackageDefinition(pacakgeDefinition).folder.Folde
 pacakgeDefinition = protoLoader.loadSync("document.proto", grpcOptions);
 const DocumentService = grpc.loadPackageDefinition(pacakgeDefinition).document.DocumentService
 
-const folderApi = new FolderService(
-    "0.0.0.0:50051",
-    grpc.credentials.createInsecure()
-)
-const documentApi = new DocumentService(
-    "0.0.0.0:50051",
-    grpc.credentials.createInsecure()
-)
+const folderApi = new FolderService("0.0.0.0:50051", grpc.credentials.createInsecure())
+const documentApi = new DocumentService("0.0.0.0:50051", grpc.credentials.createInsecure())
 
-folderApi.GetAllFolders({userId: "9af9c126-b48a-4284-ac5a-97f235cef61b"}, (error, items) => {
-    console.log(" * Getting all folders for user")
-    if(error)
-        console.error(error)
-    console.log(items)
-})
 
-// folderApi.CreateFolder({userId: "9af9c126-b48a-4284-ac5a-97f235cef61b", folderName: "New Folder"}, (error, items) => {
-//     console.log(" * Creating new folder")
-//     if(error)
-//         console.error(error)
-//     console.log(items)
-// })
 
-folderApi.GetFolderContents({folderId: "797163d5-b9d1-4e97-bdf8-6063a3f6aa75"}, (error, items) => {
-    console.log(" * Getting contents of folder 1")
-    if(error)
-        console.error(error)
-    console.log(items)
+app.get("/folder/:folderId/document/:documentId", (req, res) => {
+    documentApi.GetDocument({ documentId: req.params.documentId, folderId: req.params.folderId }, (error, document) => {
+        console.log(" * Getting contents of document")
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(document)
+    })
 })
 
 
-documentApi.GetDocument({documentId: "3ac56900-6b85-4ce5-b55c-d52c9bccd3a0", folderId: "797163d5-b9d1-4e97-bdf8-6063a3f6aa75"}, (error, document) => {
-    console.log(" * Getting contents of document")
-    if(error)
-        console.error(error)
-    console.log(document)
+app.post("/folder/:folderId/document", (req, res) => {
+    documentApi.CreateDocument({
+        folderId: req.body.folderId,
+        fileName: req.body.fileName,
+        content: req.body.content
+    }, (error, document) => {
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(document)
+    })
 })
 
+app.get("/folder/:folderId", (req, res) => {
+    folderApi.GetFolderContents({ folderId: req.params.folderId }, (error, data) => {
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        }
+        res.send(data.documents);
+    })
+})
 
-// documentApi.CreateDocument({
-//         folderId: "797163d5-b9d1-4e97-bdf8-6063a3f6aa75",
-//         fileName: "api created file_2.log",
-//         content: "This is a content from api"
-// }, (error, document) => {
-//     console.log(" * Creating new document")
-//     if(error)
-//         console.error(error)
-//     console.log(document)
-// })
+app.post("/folder", (req, res) => {
+    folderApi.CreateFolder({ userId: req.body.userId, folderName: req.body.folderName }, (error, items) => {
+        console.log(" * Creating new folder")
+        if (error) {
+            console.error(error.details)
+            res.send({ error: error.details })
+        } else {
+            res.send(items)
+        }
+    })
+})
 
-folderApi.GetFolderContents({folderId: "797163d5-b9d1-4e97-bdf8-6063a3f6aa75"}, (error, items) => {
-    console.log(" * Getting contents of folder 1")
-    if(error)
-        console.error(error)
-    console.log(items)
+app.post("/dashboard", (req, res) => {
+    folderApi.GetAllFolders({ userId: req.body.userId }, (error, items) => {
+        console.log(" * Getting all folders for user")
+        if (error) {
+            console.error(error)
+        }
+        folderApi.GetFolderContents({ folderId: items.folders[0].folderId }, (error, data) => {
+            items.folders.shift()
+            if (error) {
+                console.error(error)
+            }
+            items.folders.push(...data.documents)
+            res.send(items.folders);
+        })
+    })
+})
+
+app.listen(50052, () => {
+    console.log('listening on port 50052');
 })

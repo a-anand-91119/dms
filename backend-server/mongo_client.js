@@ -16,8 +16,8 @@ class MongoManager {
         callback();
     }
 
-    static async filterFromCollection({collectionName, query}){
-        return await db.collection(collectionName).find(query).toArray();
+    static async filterFromCollection({collectionName, query, sort={}}){
+        return await db.collection(collectionName).find(query).sort(sort).toArray();
     }
 
     static addToCollection({collectionName, object, successCallback, errorCallback}){

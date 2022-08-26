@@ -41,10 +41,10 @@ server.addService(documentProto.document.DocumentService.service, {
         // if not then create the document
         document = await MongoManager.filterFromCollection({
             collectionName: COLLECTIONS.DOCUMENTS,
-            query: { "$and": [{ folderId: call.request.folderId }, {fileName: call.request.fileName}] }
+            query: { "$and": [{ folderId: call.request.folderId }, { fileName: call.request.fileName }] }
         })
-        if(document == undefined || document.length == 0){
-            const _document = {documentId : uuid(), folderId: call.request.folderId, fileName: call.request.fileName, content: call.request.content}
+        if (document == undefined || document.length == 0) {
+            const _document = { documentId: uuid(), folderId: call.request.folderId, fileName: call.request.fileName, content: call.request.content }
             MongoManager.addToCollection({
                 collectionName: COLLECTIONS.DOCUMENTS,
                 object: _document,
@@ -65,6 +65,7 @@ server.addService(folderProto.folder.FolderService.service, {
         mongoFolders = await MongoManager.filterFromCollection({
             collectionName: COLLECTIONS.FOLDER,
             query: { userId: call.request.userId },
+            sort: { folderId: 1 }
         })
         callback(null, { folders: mongoFolders })
     },
@@ -119,7 +120,7 @@ const prepareDummyData = () => {
         const userId1 = uuid()
         const userId2 = uuid()
         const user1Folder1 = uuid()
-        const user1RootFolder = uuid()
+        const user1RootFolder = "00000" + uuid()
         // creating users
         MongoManager.addToCollection({
             collectionName: COLLECTIONS.USER,
@@ -159,7 +160,7 @@ const prepareDummyData = () => {
         })
         MongoManager.addToCollection({
             collectionName: COLLECTIONS.FOLDER,
-            object: { userId: userId2, folderId: uuid(), folderName: "/" },
+            object: { userId: userId2, folderId: "00000" + uuid(), folderName: "/" },
             successCallback: () => console.log(`Created folder for user ${userId2} with name /`),
             errorCallback: err => console.error(err)
         })
