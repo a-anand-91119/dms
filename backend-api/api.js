@@ -154,11 +154,14 @@ app.post("/dashboard", (req, res) => {
         if (error) {
             console.error(error)
         }
+        console.log(" * GetFolderContents")
         folderApi.GetFolderContents({ folderId: items.folders[0].folderId }, (error, data) => {
+            console.log(" * Received response for GetAllFolders")
             items.folders.shift()
             if (error) {
                 console.error(error)
             }
+            console.log(data)
             items.folders.push(...data.documents)
             res.send(items.folders);
         })
