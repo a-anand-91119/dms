@@ -2,7 +2,8 @@ const grpc = require("@grpc/grpc-js")
 const protoLoader = require("@grpc/proto-loader")
 
 const PROTO_PATH = "../protos"
-const { uuid } = require("uuidv4")
+const BACKEND_SERVER = `${process.env.BACKEND_SERVER_GRPC_HOST}:${process.env.BACKEND_SERVER_GRPC_PORT}`
+console.log(" * Backend Server: " + BACKEND_SERVER)
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -35,8 +36,8 @@ const FolderService = grpc.loadPackageDefinition(pacakgeDefinition).folder.Folde
 pacakgeDefinition = protoLoader.loadSync("document.proto", grpcOptions);
 const DocumentService = grpc.loadPackageDefinition(pacakgeDefinition).document.DocumentService
 
-const folderApi = new FolderService("0.0.0.0:50051", grpc.credentials.createInsecure())
-const documentApi = new DocumentService("0.0.0.0:50051", grpc.credentials.createInsecure())
+const folderApi = new FolderService(BACKEND_SERVER, grpc.credentials.createInsecure())
+const documentApi = new DocumentService(BACKEND_SERVER, grpc.credentials.createInsecure())
 
 
 app.get("/folder/:folderId/document/:documentId", (req, res) => {
