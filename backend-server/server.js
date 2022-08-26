@@ -2,12 +2,14 @@ const grpc = require("@grpc/grpc-js")
 const protoLoader = require("@grpc/proto-loader")
 
 const PROTO_PATH = "../protos"
-const ROOT_FOLDER = ""
-const TYPE = {
-    FOLDER: "1",
-    FILE: "2"
-}
+
 const { uuid } = require("uuidv4")
+const MongoManager = require("./mongo_client")
+const COLLECTIONS = {
+    USER: "Users",
+    FOLDER: "Folders",
+    DOCUMENTS: "Documents"
+}
 
 const grpcOptions = {
     keepCase: true,
@@ -18,41 +20,81 @@ const grpcOptions = {
     includeDirs: [PROTO_PATH]
 }
 
+
 var pacakgeDefinition = protoLoader.loadSync("folder.proto", grpcOptions);
 const folderProto = grpc.loadPackageDefinition(pacakgeDefinition)
 pacakgeDefinition = protoLoader.loadSync("document.proto", grpcOptions);
 const documentProto = grpc.loadPackageDefinition(pacakgeDefinition)
-
 const server = new grpc.Server()
-var folderId = 1
-let folders = {
-    items: [
-        { id: folderId, userId: "1", name: "data", type: TYPE.FOLDER},
-        { id: uuid(), userId: "1", name: "abc.txt", type: TYPE.FILE, content: "ABC", folder: ROOT_FOLDER },
-        { id: uuid(), userId: "1", name: "xyz.txt", type: TYPE.FILE, content: "XYZ", folder: folderId },
-    ]
-}
+
+server.addService(documentProto.document.DocumentService.service, {
+    GetDocument: async (call, callback) => {
+        document = await MongoManager.filterFromCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            query: { documentId: call.request.documentId } // TODO: should folderId needs to be considered here???
+        })
+        console.log(document)
+        callback(null, document[0])
+    },
+    CreateDocument: async (call, callback) => {
+        // check whether a document with same name exists in the folder
+        // if not then create the document
+        document = await MongoManager.filterFromCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            query: { "$and": [{ folderId: call.request.folderId }, {fileName: call.request.fileName}] }
+        })
+        if(document == undefined || document.length == 0){
+            const _document = {documentId : uuid(), folderId: call.request.folderId, fileName: call.request.fileName, content: call.request.content}
+            MongoManager.addToCollection({
+                collectionName: COLLECTIONS.DOCUMENTS,
+                object: _document,
+                successCallback: () => {
+                    delete _document["content"]
+                    callback(undefined, _document)
+                },
+                errorCallback: err => callback(err, undefined)
+            })
+        } else {
+            callback(new Error("Document with same name exists in this folder"), undefined)
+        }
+    }
+})
 
 server.addService(folderProto.folder.FolderService.service, {
-    GetAllFolders: (call, callback) => {
-        // 0 length folder means files without any folder
-        // TODO: remove file content from these reponse
-        items = folders.items
-            .filter(item => item.userId == call.request.userId)
-            .filter(item => item.type == TYPE.FOLDER || item.folder == ROOT_FOLDER)
-        callback(null, {items: items})
+    GetAllFolders: async (call, callback) => {
+        mongoFolders = await MongoManager.filterFromCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            query: { userId: call.request.userId },
+        })
+        callback(null, { folders: mongoFolders })
     },
-    GetFolderContents: (call, callback) => {
-        // TODO: remove file content from these reponse
-        items = folders.items
-            .filter(item => item.userId == call.request.userId && item.folder == call.request.itemId)
-        callback(null, {items: items})
+    GetFolderContents: async (call, callback) => {
+        // TODO: validate whether user has access to this folder
+        console.log(`GetFolderContents::folderId ${call.request.folderId}`)
+        mongoDocuments = await MongoManager.filterFromCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            query: { folderId: call.request.folderId }
+        })
+        mongoDocuments.forEach(doc => delete doc["content"])
+        callback(null, { documents: mongoDocuments })
     },
-    CreateFolder: (call, callback) => {
-        // TODO: do duplicate name checks
-        const _folder = { id: uuid(), userId: call.request.userId, name: call.request.folderName, type: TYPE.FOLDER}
-        folders.items.push(_folder)
-        callback(null, _folder)
+    CreateFolder: async (call, callback) => {
+        console.log(`CreateFolder::folderName ${call.request.folderName}`)
+        existngFolders = await MongoManager.filterFromCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            query: { folderName: call.request.folderName }
+        })
+        if (existngFolders == undefined || existngFolders.length == 0) {
+            const _folder = { folderId: uuid(), userId: call.request.userId, folderName: call.request.folderName }
+            MongoManager.addToCollection({
+                collectionName: COLLECTIONS.FOLDER,
+                object: _folder,
+                successCallback: () => callback(null, _folder),
+                errorCallback: err => callback(err, undefined)
+            })
+        } else {
+            callback(new Error("Folder with name already exists"), undefined)
+        }
     }
     // TODO: implement delete and update folder methods
 })
@@ -65,3 +107,81 @@ server.bindAsync(
         server.start()
     }
 )
+
+
+const prepareDummyData = () => {
+    if (process.env.BACKEND_SERVER_INIT_DATA == "true") {
+        // storing plain text password xD
+        MongoManager.dropCollection(COLLECTIONS.DOCUMENTS)
+        MongoManager.dropCollection(COLLECTIONS.FOLDER)
+        MongoManager.dropCollection(COLLECTIONS.USER)
+
+        const userId1 = uuid()
+        const userId2 = uuid()
+        const user1Folder1 = uuid()
+        const user1RootFolder = uuid()
+        // creating users
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.USER,
+            object: { userId: userId1, userName: "user1", password: "password" },
+            successCallback: () => console.log("Inserted user1"),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.USER,
+            object: { userId: userId2, userName: "user2", password: "password" },
+            successCallback: () => console.log("Inserted user2"),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            object: { userId: userId1, folderId: user1Folder1, folderName: "MyFolder1" },
+            successCallback: () => console.log(`Created folder for user ${userId1} with name MyFolder1`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            object: { userId: userId1, folderId: user1RootFolder, folderName: "/" },
+            successCallback: () => console.log(`Created folder for user ${userId1} with name /`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            object: { userId: userId1, folderId: uuid(), folderName: "MyFolder2" },
+            successCallback: () => console.log(`Created folder for user ${userId1} with name MyFolder2`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            object: { userId: userId2, folderId: uuid(), folderName: "MyFolder1" },
+            successCallback: () => console.log(`Created folder for user ${userId2} with name MyFolder1`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.FOLDER,
+            object: { userId: userId2, folderId: uuid(), folderName: "/" },
+            successCallback: () => console.log(`Created folder for user ${userId2} with name /`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            object: { documentId: uuid(), folderId: user1Folder1, fileName: "abc.txt", content: "ABC CONTENT" },
+            successCallback: () => console.log(`Created document for user ${userId1} and folder MyFolder1 with name abc.txt`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            object: { documentId: uuid(), folderId: user1Folder1, fileName: "xyz.txt", content: "XYZ CONTENT" },
+            successCallback: () => console.log(`Created document for user ${userId1} and folder MyFolder1 with name abc.txt`),
+            errorCallback: err => console.error(err)
+        })
+        MongoManager.addToCollection({
+            collectionName: COLLECTIONS.DOCUMENTS,
+            object: { documentId: uuid(), folderId: user1RootFolder, fileName: "root.txt", content: "FILE IN ROOT" },
+            successCallback: () => console.log(`Created document for user ${userId1} and folder / with name root.txt`),
+            errorCallback: err => console.error(err)
+        })
+    }
+}
+
+MongoManager.initDBConnection(prepareDummyData)

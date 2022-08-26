@@ -1,10 +1,25 @@
 syntax = "proto3";
 package document;
-import "item.proto";
 
 service DocumentService {
-    rpc GetDocument (item.ItemRequest) returns (item.Item) {}
-    rpc CreateDocument (item.Item) returns (item.Item) {}
-    rpc DeleteDocument (item.ItemRequest) returns (item.Item) {}
-    rpc UpdateDocument (item.Item) returns (item.Item) {}
+    rpc GetDocument (DocumentRequest) returns (Document) {}
+    rpc CreateDocument (Document) returns (Document) {}
+    rpc DeleteDocument (DocumentRequest) returns (Document) {}
+    rpc UpdateDocument (Document) returns (Document) {}
+}
+
+message DocumentRequest{
+    required string documentId = 1;
+    required string folderId = 2;
+}
+
+message Document{
+    string documentId = 1;
+    required string folderId = 2;
+    string fileName = 3;
+    string content = 4;
+}
+
+message Documents {
+    repeated Document documents = 1;
 }

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    env_file:
+      - envs/.mongo.env
+  mongo-express:
+    image: mongo-express
+    env_file:
+      - envs/.mongo-express.env
+    depends_on:
+        - mongo
+    ports:
+      - "8888:8081"

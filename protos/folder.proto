@@ -1,22 +1,32 @@
 syntax = "proto3";
-import "item.proto";
+import "document.proto";
+
 package folder;
 
 service FolderService {
-    rpc GetAllFolders (item.ItemRequest) returns (item.ItemResponse) {}
-    rpc GetFolderContents (item.ItemRequest) returns (item.ItemResponse) {}
-    rpc CreateFolder (CreateFolderRequest) returns (item.Item) {}
-    rpc DeleteFolder (item.ItemRequest) returns (item.Item) {}
-    rpc UpdateFolder (EditFolderRequest) returns (item.Item) {}
+    rpc GetAllFolders (FolderRequest) returns (FolderLists) {}
+    rpc GetFolderContents (FolderRequest) returns (document.Documents) {}
+    rpc CreateFolder (CreateFolderRequest) returns (Folder) {}
+    rpc DeleteFolder (FolderRequest) returns (Folder) {}
+    rpc UpdateFolder (Folder) returns (Folder) {}
+}
+
+message FolderRequest {
+    string userId = 1;
+    string folderId = 2;
+}
+
+message Folder {
+    required string folderId =1;
+    required string userId =2;
+    required string folderName=3;
+}
+
+message FolderLists{
+    repeated Folder folders =1;
 }
 
 message CreateFolderRequest {
     required string userId = 1;
     required string folderName = 2;
-}
-
-message EditFolderRequest {
-    required string userId = 1;
-    required string folderId = 2;
-    required string folderName = 3;
 }
