@@ -9,6 +9,24 @@ services:
     env_file:
       - envs/.mongo-express.env
     depends_on:
-        - mongo
+      - mongo
     ports:
-      - "8888:8081"
+      - "${MONGO_EXPRESS_PORT}:8081"
+  backend-server:
+    hostname: backendserver
+    build: ./backend-server
+    env_file:
+      - envs/.backend-server.env
+    depends_on:
+      - mongo
+    ports:
+      - "${BACKEND_SERVER_GRPC_PORT}:50051"
+  backend-api:
+    hostname: backendapi
+    build: ./backend-api
+    env_file:
+      - envs/.backend-api.env
+    depends_on:
+      - backend-server
+    ports:
+      - "${BACKEND_API_HTTP_PORT}:50052"
