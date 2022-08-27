@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
-// const uri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
-const uri = `mongodb://192.168.0.127:27017`;
+const uri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
+// const uri = `mongodb://192.168.0.127:27017`;
 const client = new MongoClient(uri);
 
 class MongoManager {
