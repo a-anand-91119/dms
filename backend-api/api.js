@@ -2,8 +2,8 @@ const grpc = require("@grpc/grpc-js")
 const protoLoader = require("@grpc/proto-loader")
 
 const PROTO_PATH = "../protos"
-const BACKEND_SERVER = `${process.env.BACKEND_SERVER_GRPC_HOST}:${process.env.BACKEND_SERVER_GRPC_PORT}`
-// const BACKEND_SERVER = `0.0.0.0:50051`
+// const BACKEND_SERVER = `${process.env.BACKEND_SERVER_GRPC_HOST}:${process.env.BACKEND_SERVER_GRPC_PORT}`
+const BACKEND_SERVER = `0.0.0.0:50051`
 console.log(" * Backend Server: " + BACKEND_SERVER)
 
 const express = require('express');
@@ -106,7 +106,7 @@ app.get("/folder/:folderId", (req, res) => {
             console.error(error.details)
             res.send({ error: error.details })
         }
-        res.send(data.documents);
+        res.send(data);
     })
 })
 
@@ -153,18 +153,20 @@ app.post("/dashboard", (req, res) => {
         console.log(" * Received response for GetAllFolders")
         if (error) {
             console.error(error)
+            res.send({ error: error.details })
+        } else {
+            console.log(" * GetFolderContents")
+            folderApi.GetFolderContents({ folderId: items.folders[0].folderId }, (error, data) => {
+                console.log(" * Received response for GetAllFolders")
+                items.folders.shift()
+                if (error) {
+                    console.error(error)
+                }
+                console.log(data)
+                items.folders.push(...data.documents)
+                res.send(items.folders);
+            })
         }
-        console.log(" * GetFolderContents")
-        folderApi.GetFolderContents({ folderId: items.folders[0].folderId }, (error, data) => {
-            console.log(" * Received response for GetAllFolders")
-            items.folders.shift()
-            if (error) {
-                console.error(error)
-            }
-            console.log(data)
-            items.folders.push(...data.documents)
-            res.send(items.folders);
-        })
     })
 })
 

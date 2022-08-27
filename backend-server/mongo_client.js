@@ -1,53 +1,56 @@
 const { MongoClient } = require('mongodb');
 
-const uri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
-// const uri = `mongodb://192.168.0.127:27017`;
+// const uri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
+const uri = `mongodb://192.168.0.127:27017`;
 const client = new MongoClient(uri);
-let db = undefined
-
-async function init() {
-    await client.connect();
-    db = client.db("dms")
-}
 
 class MongoManager {
-    static async initDBConnection(callback) {
-        await init();
-        console.log(" * Established connection to mongo")
-        callback();
+
+    db=undefined
+
+    constructor(){
+        this.initDBConnection()
     }
 
-    static async filterFromCollection({ collectionName, query, sort = {} }) {
-        return await db.collection(collectionName).find(query).sort(sort).toArray();
+    async initDBConnection() {
+        if(this.db == undefined){
+            await client.connect();
+            this.db = client.db("dms")
+            console.log(" * Established connection to mongo")
+        }
     }
 
-    static addToCollection({ collectionName, object, successCallback, errorCallback }) {
-        db.collection(collectionName).insertOne(object, (err, res) => {
+    async filterFromCollection({ collectionName, query, sort = {} }) {
+        return await this.db.collection(collectionName).find(query).sort(sort).toArray();
+    }
+
+    addToCollection({ collectionName, object, successCallback, errorCallback }) {
+        this.db.collection(collectionName).insertOne(object, (err, res) => {
             if (err) errorCallback(err);
             successCallback();
         })
     }
 
-    static deleteMultipleFromCollection({ collectionName, query, successCallback, errorCallback }) {
-        db.collection(collectionName).deleteMany(query, (err, res) => {
+    deleteMultipleFromCollection({ collectionName, query, successCallback, errorCallback }) {
+        this.db.collection(collectionName).deleteMany(query, (err, res) => {
             if (err) errorCallback(err);
             successCallback();
         });
     }
 
-    static updateDocument({ collectionName, query, updateQuery, returnOptions, successCallback, errorCallback }) {
-        db.collection(collectionName).findOneAndUpdate(query, updateQuery, returnOptions, (err, res) => {
+    updateDocument({ collectionName, query, updateQuery, returnOptions, successCallback, errorCallback }) {
+        this.db.collection(collectionName).findOneAndUpdate(query, updateQuery, returnOptions, (err, res) => {
             if (err) errorCallback(err);
             successCallback(res);
         });
     }
 
-    static deleteFromColletion({ collectionName, query }) {
-        db.collection(collectionName).deleteOne(query)
+    deleteFromColletion({ collectionName, query }) {
+        this.db.collection(collectionName).deleteOne(query)
     }
 
-    static async dropCollection(collectionName) {
-        await db.collection(collectionName).drop((err, dropOK) => {
+    async dropCollection(collectionName) {
+        await this.db.collection(collectionName).drop((err, dropOK) => {
             if (err) {
                 console.error("There is an error::", err);
             }
@@ -56,4 +59,4 @@ class MongoManager {
     }
 }
 
-module.exports = MongoManager
+module.exports = new MongoManager()
