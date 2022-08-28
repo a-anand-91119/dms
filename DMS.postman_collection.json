@@ -12,18 +12,24 @@
 					"name": "Get Document",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document/b15961f3-c7eb-4381-936e-f0026412604d",
+							"raw": "http://{{baseUrl}}/folder/3a958e54-afdf-40d9-a5cd-def032a7068c/document/1179c201-51ba-4a02-9c60-4198ecd638e6",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"3a958e54-afdf-40d9-a5cd-def032a7068c",
 								"document",
-								"b15961f3-c7eb-4381-936e-f0026412604d"
+								"1179c201-51ba-4a02-9c60-4198ecd638e6"
 							]
 						}
 					},
@@ -33,10 +39,16 @@
 					"name": "Create Document",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"folderId\": \"00000c8f4313e-87e3-4111-889a-2b457e067c46\",\n    \"fileName\": \"REST FIle For dlete.txt\",\n    \"content\": \"This is the rest file content\"\n}",
+							"raw": "{\n    \"fileName\": \"REST File2.txt\",\n    \"content\": \"This is the rest file content\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,14 +56,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document",
+							"raw": "http://{{baseUrl}}/folder/3a958e54-afdf-40d9-a5cd-def032a7068c/document",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"3a958e54-afdf-40d9-a5cd-def032a7068c",
 								"document"
 							]
 						}
@@ -62,18 +74,24 @@
 					"name": "Delete Document",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document/e24c7adc-47e8-488f-8224-17be1b89ea47",
+							"raw": "http://{{baseUrl}}/folder/3a958e54-afdf-40d9-a5cd-def032a7068c/document/1179c201-51ba-4a02-9c60-4198ecd638e6",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
+								"3a958e54-afdf-40d9-a5cd-def032a7068c",
 								"document",
-								"e24c7adc-47e8-488f-8224-17be1b89ea47"
+								"1179c201-51ba-4a02-9c60-4198ecd638e6"
 							]
 						}
 					},
@@ -83,10 +101,16 @@
 					"name": "Update Document",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"folderId\": \"7c1dc096-70d3-495e-b30d-13cec0377026\",\n    \"fileName\": \"Updated File asd Name.txt\",\n    \"content\": \"updated content final\"\n}",
+							"raw": "{\n    \"folderId\": \"3a958e54-afdf-40d9-a5cd-def032a7068c\",\n    \"fileName\": \"Updated File asd Name.txt\",\n    \"content\": \"updated content final\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,46 +118,16 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/7c1dc096-70d3-495e-b30d-13cec0377026/document/fa45fb94-37c4-4d4a-bf0e-496b0c15d100",
+							"raw": "http://{{baseUrl}}/folder/3a958e54-afdf-40d9-a5cd-def032a7068c/document/1179c201-51ba-4a02-9c60-4198ecd638e6",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"7c1dc096-70d3-495e-b30d-13cec0377026",
+								"3a958e54-afdf-40d9-a5cd-def032a7068c",
 								"document",
-								"fa45fb94-37c4-4d4a-bf0e-496b0c15d100"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Move Document",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://{{baseUrl}}/folder/00000c8f4313e-87e3-4111-889a-2b457e067c46/document/b15961f3-c7eb-4381-936e-f0026412604d",
-							"protocol": "http",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"folder",
-								"00000c8f4313e-87e3-4111-889a-2b457e067c46",
-								"document",
-								"b15961f3-c7eb-4381-936e-f0026412604d"
+								"1179c201-51ba-4a02-9c60-4198ecd638e6"
 							]
 						}
 					},
@@ -148,16 +142,22 @@
 					"name": "Get Folder Contents",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/7c1dc096-70d3-495e-b30d-13cec0377026",
+							"raw": "http://{{baseUrl}}/folder/a3ee0de2-a904-463f-b5e2-eb4d9193a85b",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"7c1dc096-70d3-495e-b30d-13cec0377026"
+								"a3ee0de2-a904-463f-b5e2-eb4d9193a85b"
 							]
 						}
 					},
@@ -167,10 +167,16 @@
 					"name": "Create Folder",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": \"0483d877-00c1-4577-bf5e-5ab36f25824f\",\n    \"folderName\": \"REST Folder 1\"\n}",
+							"raw": "{\n    \"folderName\": \"REST Folder 123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -194,25 +200,22 @@
 					"name": "Delete Folder",
 					"request": {
 						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"userId\": \"0483d877-00c1-4577-bf5e-5ab36f25824f\",\n    \"folderId\": \"798b72bb-a501-4736-8479-46612c3e4e50\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
 							}
-						},
+						],
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/798b72bb-a501-4736-8479-46612c3e4e50",
+							"raw": "http://{{baseUrl}}/folder/a3ee0de2-a904-463f-b5e2-eb4d9193a85b",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"798b72bb-a501-4736-8479-46612c3e4e50"
+								"a3ee0de2-a904-463f-b5e2-eb4d9193a85b"
 							]
 						}
 					},
@@ -222,10 +225,16 @@
 					"name": "Update Folder",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"folderId\": \"798b72bb-a501-4736-8479-46612c3e4e50\",\n    \"folderName\": \"Updated Folder Name\"\n}",
+							"raw": "{\n    \"folderName\": \"Updated Folder Name\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -233,14 +242,73 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{baseUrl}}/folder/798b72bb-a501-4736-8479-46612c3e4e50",
+							"raw": "http://{{baseUrl}}/folder/a3ee0de2-a904-463f-b5e2-eb4d9193a85b",
 							"protocol": "http",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"folder",
-								"798b72bb-a501-4736-8479-46612c3e4e50"
+								"a3ee0de2-a904-463f-b5e2-eb4d9193a85b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "CreateUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"apiuser\",\n    \"password\": \"apiUserPassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/register",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"apiuser\",\n    \"password\": \"apiUserPassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/login",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
 							]
 						}
 					},
@@ -270,16 +338,13 @@
 			"name": "Dashboard",
 			"request": {
 				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"userId\": \"0483d877-00c1-4577-bf5e-5ab36f25824f\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "default"
 					}
-				},
+				],
 				"url": {
 					"raw": "http://{{baseUrl}}/dashboard",
 					"protocol": "http",
@@ -318,6 +383,11 @@
 		{
 			"key": "baseUrl",
 			"value": "192.168.0.127:50052",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkYmUwYzk4OC0zYmUyLTQyNDgtYmRhMi1hOTlmZmZhYzc1MjciLCJ1c2VyTmFtZSI6ImFwaXVzZXIiLCJpYXQiOjE2NjE2MTUzMjAsImV4cCI6MTY2MTYxODkyMH0.WvAdIi4E4GEtDArCLr698ksJCn--UGiAhjS8exIZt1s",
 			"type": "default"
 		}
 	]

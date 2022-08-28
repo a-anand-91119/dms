@@ -1,6 +1,6 @@
 const grpc = require("@grpc/grpc-js")
 const protoLoader = require("@grpc/proto-loader")
-
+const bcrypt = require("bcryptjs")
 const PROTO_PATH = "../protos"
 
 const { uuid } = require("uuidv4")
@@ -25,7 +25,42 @@ var pacakgeDefinition = protoLoader.loadSync("folder.proto", grpcOptions);
 const folderProto = grpc.loadPackageDefinition(pacakgeDefinition)
 pacakgeDefinition = protoLoader.loadSync("document.proto", grpcOptions);
 const documentProto = grpc.loadPackageDefinition(pacakgeDefinition)
+pacakgeDefinition = protoLoader.loadSync("user.proto", grpcOptions);
+const userProto = grpc.loadPackageDefinition(pacakgeDefinition)
 const server = new grpc.Server()
+
+server.addService(userProto.user.UserService.service, {
+    GetUserByName: async (call, callback) => {
+        user = await mongoManager.filterFromCollection({
+            collectionName: COLLECTIONS.USER,
+            query: { userName: call.request.userName }
+        })
+        if (!user || user.length != 1) {
+            callback(new Error("User Not found"), undefined)
+        } else {
+            callback(undefined, user[0])
+        }
+    },
+    CreateUser: async (call, callback) => {
+        const _user = { userId: uuid(), userName: call.request.userName, password: call.request.password }
+        mongoManager.addToCollection({
+            collectionName: COLLECTIONS.USER,
+            object: _user,
+            successCallback: () => {
+                delete _user["password"]
+                // once a user has been created we'll create the root folder /
+                mongoManager.addToCollection({
+                    collectionName: COLLECTIONS.FOLDER,
+                    object: { userId: _user.userId, folderId: uuid(), folderName: "/" },
+                    successCallback: () => console.log(`Created folder for user ${_user.userId} with name /`),
+                    errorCallback: err => console.error(err)
+                })
+                callback(undefined, _user)
+            },
+            errorCallback: err => callback(err, undefined)
+        })
+    }
+})
 
 server.addService(documentProto.document.DocumentService.service, {
     GetDocument: async (call, callback) => {
@@ -91,10 +126,10 @@ server.addService(folderProto.folder.FolderService.service, {
             query: { userId: call.request.userId },
             sort: { folderId: 1 }
         })
-        if(mongoFolders.length == 0){
+        if (mongoFolders.length == 0) {
             // invalid userid. All users will have atleast the root folder
             callback(new Error("Invalid user id"), undefined)
-        }else{
+        } else {
             callback(undefined, { folders: mongoFolders })
         }
     },
@@ -177,13 +212,13 @@ const prepareDummyData = async () => {
     // creating users
     mongoManager.addToCollection({
         collectionName: COLLECTIONS.USER,
-        object: { userId: userId1, userName: "user1", password: "password" },
+        object: { userId: userId1, userName: "user1", password: await bcrypt.hash("password", 5) },
         successCallback: () => console.log("Inserted user1"),
         errorCallback: err => console.error(err)
     })
     mongoManager.addToCollection({
         collectionName: COLLECTIONS.USER,
-        object: { userId: userId2, userName: "user2", password: "password" },
+        object: { userId: userId2, userName: "user2", password: await bcrypt.hash("password", 5) },
         successCallback: () => console.log("Inserted user2"),
         errorCallback: err => console.error(err)
     })
